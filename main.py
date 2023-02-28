@@ -145,6 +145,25 @@ if __name__ == "__main__":
         pygame.draw.rect(win, (255,0,0), [smallest_XY[0],smallest_XY[1],width, height], 2, 5)
 
 
+    def drawGrid(window, size, rows):
+
+        # Size of cubes in grid
+        distatnce_btw_rows = size // rows
+        x=0
+        y=0
+
+        for z in range(rows):
+            # increment x and y values using distance adder
+            x+= distatnce_btw_rows
+            y+= distatnce_btw_rows
+
+            #draw line from x until size
+            pygame.draw.line(window, (178,190,181), (x,0), (x, size))
+            #draw line from from size to y
+            pygame.draw.line(window, (178,190,181), (0,y), (size, y))
+
+
+    drawGrid(win, 1200, 100)
     DrawMap()
     drawRectangle()
     pygame.display.update()
