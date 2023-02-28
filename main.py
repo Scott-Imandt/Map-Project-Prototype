@@ -1,3 +1,8 @@
+# Steps to use application
+#   1. launch and draw the geojson file provided
+#   2. apon quiting the application the score of your accuracy will be printed in the console
+
+
 import pygame
 import json
 
