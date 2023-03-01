@@ -10,13 +10,13 @@
 import pygame
 import json
 
-def playGame():
+def playGame(difficulty, map):
 
     #CHANGE THIS NUMBER TO AFFECT WHOLE FILE
-    MAP_FILE_NUMBER = 2
+    MAP_FILE_NUMBER = map
 
     #CHANGE THIS NUMBER TO AFFECT WHOLE FILE
-    DIFFICULTY = 50
+    DIFFICULTY = difficulty
 
     pygame_coordinates_Array = []
 
@@ -160,8 +160,8 @@ def playGame():
         smallest_XY = [smallest_XY[0]-100, smallest_XY[1]-100]
         largest_XY = [largest_XY[0]+100, largest_XY[1]+100]
 
-        print(smallest_XY)
-        print(largest_XY)
+        #print(smallest_XY)
+        #print(largest_XY)
         width = largest_XY[0] - smallest_XY[0]
         height = largest_XY[1] - smallest_XY[1]
         pygame.draw.rect(win, (255,0,0), [smallest_XY[0],smallest_XY[1],width, height], 2, 5)
