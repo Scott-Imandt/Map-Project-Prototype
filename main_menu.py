@@ -75,7 +75,7 @@ def chooseMap(difficulty):
                     playGame(difficulty, 2)
         pygame.display.update()
 
-if __name__ == "__main__":
+def mainMenu():
     while True:
         SCREEN.blit(BG, (0, 0))
 
@@ -101,3 +101,6 @@ if __name__ == "__main__":
                     pygame.quit()
                     sys.exit()
         pygame.display.update()
+    
+if __name__ == "__main__":
+    mainMenu()

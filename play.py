@@ -8,6 +8,7 @@
 
 from button import Button
 from main_menu import get_font
+from end_screen import end
 import pygame, sys
 import json
 
@@ -255,10 +256,9 @@ def playGame(difficulty, map):
                 if CLOSE_BUTTON.checkForInput(CLOSE_MOUSE_POS):
                     drawnpoints = remove_duplicate_lists(drawnpoints)
                     pygame.display.update()
-                    print("Your Score is equal to:")
-                    print(pointComparator(DIFFICULTY),"%")
-                    pygame.quit()
-                    sys.exit()
+                    score = pointComparator(DIFFICULTY)
+                    end(str(score))
+                    
             if event.type == pygame.QUIT:
                 # change the value too False, to exit the main loop
                 running = False
