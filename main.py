@@ -1,7 +1,10 @@
 # Steps to use application
 #   1. launch and draw the geojson file provided
-#   2.5 change / set difficulty (50 == easy, 20 medium, 10 hard) These number are working numbers that set pixel offset accuracy
-#   2. apon quiting the application the score of your accuracy will be printed in the console
+#   2. Change / set difficulty (50 = easy, 20 = medium, = 10 hard) These number are working numbers that set pixel offset accuracy
+#   3. Change Map file number (0 = USA , 1 = Italy, 2 = Australia)
+#   4. apon quiting the application the score of your accuracy will be printed in the console
+
+#Note MIddle mouse click reveals the boundray you are trying to draw
 
 
 import pygame
@@ -9,6 +12,11 @@ import json
 
 if __name__ == "__main__":
 
+    #CHANGE THIS NUMBER TO AFFECT WHOLE FILE
+    MAP_FILE_NUMBER = 2
+
+    #CHANGE THIS NUMBER TO AFFECT WHOLE FILE
+    DIFFICULTY = 50
 
     pygame_coordinates_Array = []
 
@@ -55,7 +63,23 @@ if __name__ == "__main__":
                 pygame_coordinates_Array.append(pygame_coordinates)
                 # Draw the polygon on the screen
                 # Dont want to show map then comment out section below (This could bw used later possibly to show drawing at a later time)
+                #pygame.draw.polygon(win, (0, 0, 255), pygame_coordinates, 3)
+
+    def DrawMapButtonCLick(geojson_data, multiplyList, addList):
+        # Loop through each feature in the GeoJSON data and draw it on the screen
+        for feature in geojson_data['features']:
+            # Get the coordinates of the feature
+            coordinates = feature['geometry']['coordinates']
+            # If the feature is a polygon or a multipolygon, draw it using Pygame
+            if feature['geometry']['type'] in ['Polygon', 'MultiPolygon']:
+                # Convert the GeoJSON coordinates to Pygame coordinates
+                pygame_coordinates = [convert_coordinates(coord, multiplyList, addList) for coord in coordinates[0][0]]
+                # Add to pygame_coordinates_dict
+                #pygame_coordinates_Array.append(pygame_coordinates)
+                # Draw the polygon on the screen
+                # Dont want to show map then comment out section below (This could bw used later possibly to show drawing at a later time)
                 pygame.draw.polygon(win, (0, 0, 255), pygame_coordinates, 3)
+
 
     def pointComparator(difficulty):
         #get the size of how many correct points
@@ -161,31 +185,52 @@ if __name__ == "__main__":
             pygame.draw.line(window, (178,190,181), (0,y), (size, y))
 
 
-    def loadJSONFile(number):
+    def loadJSONFile(number, boolean):
         # Load GeoJSON data
-        if(number == 0):
+        if(number == 0 and boolean):
             with open('testGeoJsonFIle.json') as f:
                 geojson_data = json.load(f)
             multiplyList = [16,-16]
             addList = [2130,1050]
             DrawMap(geojson_data, multiplyList,addList)
 
-        elif(number == 1):
+        elif(number == 1 and boolean):
             with open('TestFileOFItaly.json') as f:
                 geojson_data = json.load(f)
             multiplyList = [40, -40]
             addList = [100, 2150]
             DrawMap(geojson_data, multiplyList, addList)
 
-        elif (number == 2):
+        elif (number == 2 and boolean):
             with open('TestFileOfAustralia.json') as f:
                 geojson_data = json.load(f)
             multiplyList = [15, -15]
             addList = [-1400, 100]
             DrawMap(geojson_data, multiplyList, addList)
 
+        elif (number == 0 and boolean== False):
+            with open('testGeoJsonFIle.json') as f:
+                geojson_data = json.load(f)
+            multiplyList = [16, -16]
+            addList = [2130, 1050]
+            DrawMapButtonCLick(geojson_data, multiplyList, addList)
+
+        elif (number == 1 and boolean == False):
+            with open('TestFileOFItaly.json') as f:
+                geojson_data = json.load(f)
+            multiplyList = [40, -40]
+            addList = [100, 2150]
+            DrawMapButtonCLick(geojson_data, multiplyList, addList)
+
+        elif (number == 2 and boolean == False):
+            with open('TestFileOfAustralia.json') as f:
+                geojson_data = json.load(f)
+            multiplyList = [15, -15]
+            addList = [-1400, 100]
+            DrawMapButtonCLick(geojson_data, multiplyList, addList)
+
     drawGrid(win, 1200, 100)
-    loadJSONFile(2)
+    loadJSONFile(MAP_FILE_NUMBER, True)
     drawRectangle()
     pygame.display.update()
 
@@ -244,7 +289,8 @@ if __name__ == "__main__":
 
         #middle mouse click
         if(mouse[1]):
-            #print(pygame_coordinates_Array)
+            loadJSONFile(MAP_FILE_NUMBER, False)
+            pygame.display.update()
             pass
 
 
@@ -252,4 +298,4 @@ if __name__ == "__main__":
     drawnpoints = remove_duplicate_lists(drawnpoints)
     pygame.display.update()
     print("Your Score is equal to:")
-    print(pointComparator(50),"%")
+    print(pointComparator(DIFFICULTY),"%")
