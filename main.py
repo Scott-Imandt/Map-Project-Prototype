@@ -10,7 +10,7 @@
 import pygame
 import json
 
-if __name__ == "__main__":
+def playGame():
 
     #CHANGE THIS NUMBER TO AFFECT WHOLE FILE
     MAP_FILE_NUMBER = 2
