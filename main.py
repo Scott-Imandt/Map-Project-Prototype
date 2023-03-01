@@ -9,9 +9,6 @@ import json
 
 if __name__ == "__main__":
 
-    # Load GeoJSON data
-    with open('testGeoJsonFIle.json') as f:
-        geojson_data = json.load(f)
 
     pygame_coordinates_Array = []
 
@@ -39,12 +36,13 @@ if __name__ == "__main__":
 
 
     # Define a function to convert GeoJSON coordinates to Pygame coordinates
-    def convert_coordinates(coordinates):
+    def convert_coordinates(coordinates, multiplyList, addList):
         x, y = coordinates
-        # You may need to adjust the scaling factor depending on the size of your GeoJSON data
-        return int((x * 16)+2130), int((y * -16)+1050)
 
-    def DrawMap():
+        # You may need to adjust the scaling factor depending on the size of your GeoJSON data
+        return int((x * multiplyList[0])+addList[0]), int((y * multiplyList[1])+addList[1])
+
+    def DrawMap(geojson_data, multiplyList, addList):
         # Loop through each feature in the GeoJSON data and draw it on the screen
         for feature in geojson_data['features']:
             # Get the coordinates of the feature
@@ -52,7 +50,7 @@ if __name__ == "__main__":
             # If the feature is a polygon or a multipolygon, draw it using Pygame
             if feature['geometry']['type'] in ['Polygon', 'MultiPolygon']:
                 # Convert the GeoJSON coordinates to Pygame coordinates
-                pygame_coordinates = [convert_coordinates(coord) for coord in coordinates[0][0]]
+                pygame_coordinates = [convert_coordinates(coord, multiplyList, addList) for coord in coordinates[0][0]]
                 # Add to pygame_coordinates_dict
                 pygame_coordinates_Array.append(pygame_coordinates)
                 # Draw the polygon on the screen
@@ -163,8 +161,31 @@ if __name__ == "__main__":
             pygame.draw.line(window, (178,190,181), (0,y), (size, y))
 
 
+    def loadJSONFile(number):
+        # Load GeoJSON data
+        if(number == 0):
+            with open('testGeoJsonFIle.json') as f:
+                geojson_data = json.load(f)
+            multiplyList = [16,-16]
+            addList = [2130,1050]
+            DrawMap(geojson_data, multiplyList,addList)
+
+        elif(number == 1):
+            with open('TestFileOFItaly.json') as f:
+                geojson_data = json.load(f)
+            multiplyList = [40, -40]
+            addList = [100, 2150]
+            DrawMap(geojson_data, multiplyList, addList)
+
+        elif (number == 2):
+            with open('TestFileOfAustralia.json') as f:
+                geojson_data = json.load(f)
+            multiplyList = [15, -15]
+            addList = [-1400, 100]
+            DrawMap(geojson_data, multiplyList, addList)
+
     drawGrid(win, 1200, 100)
-    DrawMap()
+    loadJSONFile(2)
     drawRectangle()
     pygame.display.update()
 
