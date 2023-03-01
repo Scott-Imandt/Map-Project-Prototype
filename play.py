@@ -1,13 +1,14 @@
 # Steps to use application
-#   1. launch and draw the geojson file provided
+#   1. launch from main_menu.py and draw the geojson file provided
 #   2. Change / set difficulty (50 = easy, 20 = medium, = 10 hard) These number are working numbers that set pixel offset accuracy
 #   3. Change Map file number (0 = USA , 1 = Italy, 2 = Australia)
-#   4. apon quiting the application the score of your accuracy will be printed in the console
+#   4. Upon quiting the application the score of your accuracy will be printed in the console
 
-#Note MIddle mouse click reveals the boundray you are trying to draw
+#Note Middle mouse click reveals the boundary you are trying to draw
 
-
-import pygame
+from button import Button
+from main_menu import get_font
+import pygame, sys
 import json
 
 def playGame(difficulty, map):
@@ -25,15 +26,17 @@ def playGame(difficulty, map):
 
     #tuple to set window size
     win = pygame.display.set_mode((1200,1000))
+    BG = pygame.image.load("assets/Gradient Background.png")
+    win.blit(BG, (0, 0))
 
     #String to set window title
-    pygame.display.set_caption("Map Game Prototype");
+    pygame.display.set_caption("Map Game Prototype")
 
     #Define a variable to control the main loop
     running = True
 
     #fill window with white on game start
-    win.fill((255,255,255))
+    #win.fill((255,255,255))
 
     clock = pygame.time.Clock()
 
@@ -170,14 +173,14 @@ def playGame(difficulty, map):
     def drawGrid(window, size, rows):
 
         # Size of cubes in grid
-        distatnce_btw_rows = size // rows
+        distance_btw_rows = size // rows
         x=0
         y=0
 
         for z in range(rows):
             # increment x and y values using distance adder
-            x+= distatnce_btw_rows
-            y+= distatnce_btw_rows
+            x+= distance_btw_rows
+            y+= distance_btw_rows
 
             #draw line from x until size
             pygame.draw.line(window, (178,190,181), (x,0), (x, size))
@@ -236,10 +239,26 @@ def playGame(difficulty, map):
 
     # main loop
     while running:
+        CLOSE_MOUSE_POS = pygame.mouse.get_pos()
+
+        CLOSE_BUTTON = Button(image=pygame.image.load("assets/Select Box.png"), pos=(600, 100), 
+                        text_input="Done", font=get_font(48), base_color="#a8f8d9", hovering_color="White")
+
+        for button in [CLOSE_BUTTON]:
+            button.changeColor(CLOSE_MOUSE_POS)
+            button.update(win)
 
         # event handling, gets all event from the event queue
         for event in pygame.event.get():
             # only do something if the event is of type QUIT
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if CLOSE_BUTTON.checkForInput(CLOSE_MOUSE_POS):
+                    drawnpoints = remove_duplicate_lists(drawnpoints)
+                    pygame.display.update()
+                    print("Your Score is equal to:")
+                    print(pointComparator(DIFFICULTY),"%")
+                    pygame.quit()
+                    sys.exit()
             if event.type == pygame.QUIT:
                 # change the value too False, to exit the main loop
                 running = False
@@ -293,9 +312,8 @@ def playGame(difficulty, map):
             pygame.display.update()
             pass
 
+        pygame.display.update()
 
         clock.tick(120)
-    drawnpoints = remove_duplicate_lists(drawnpoints)
-    pygame.display.update()
-    print("Your Score is equal to:")
-    print(pointComparator(DIFFICULTY),"%")
+
+    

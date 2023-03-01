@@ -1,3 +1,4 @@
+#Run this file to start game!
 import pygame, sys
 from button import Button
 from play import *
