@@ -1,6 +1,6 @@
 import pygame, sys
 from button import Button
-from main import *
+from play import *
 
 pygame.init()
 
