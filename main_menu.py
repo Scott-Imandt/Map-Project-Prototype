@@ -2,24 +2,15 @@ import pygame, sys
 from button import Button
 from main import *
 
-MAP_FILE_NUMBER = 0
-DIFFICULTY = 50
-
 pygame.init()
 
 SCREEN = pygame.display.set_mode((1200, 1000))
-pygame.display.set_caption("Dividing Line")
+pygame.display.set_caption("Dividing Line - Prototype")
 
 BG = pygame.image.load("assets/MainMenu.png")
 
 def get_font(size): # Returns Press-Start-2P in the desired size
     return pygame.font.Font("assets/font.ttf", size)
-
-def setDifficulty(difficulty):
-    DIFFICULTY = difficulty
-
-def setMap(number):
-    MAP_FILE_NUMBER = number
 
 def chooseDifficulty():
     while True:
@@ -29,7 +20,7 @@ def chooseDifficulty():
         DIFF_MOUSE_POS = pygame.mouse.get_pos()
 
         EASY_BUTTON = Button(image=pygame.image.load("assets/Easy Button.png"), pos=(300, 600), 
-                            text_input="EASY", font=get_font(48), base_color="#09eaf6", hovering_color="White")
+                            text_input="EASY", font=get_font(48), base_color="#a8f8d9", hovering_color="White")
         MEDIUM_BUTTON = Button(image=pygame.image.load("assets/Medium Button.png"), pos=(600, 600), 
                             text_input="MEDIUM", font=get_font(48), base_color="#f39e0c", hovering_color="White")
         HARD_BUTTON = Button(image=pygame.image.load("assets/Hard Button.png"), pos=(900, 600), 
@@ -45,30 +36,26 @@ def chooseDifficulty():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if EASY_BUTTON.checkForInput(DIFF_MOUSE_POS):
-                    setDifficulty(50)
-                    chooseMap()
+                    chooseMap(50)
                 elif MEDIUM_BUTTON.checkForInput(DIFF_MOUSE_POS):
-                    setDifficulty(20)
-                    chooseMap()
+                    chooseMap(20)
                 elif HARD_BUTTON.checkForInput(DIFF_MOUSE_POS):
-                    setDifficulty(10)
-                    chooseMap()
-
+                    chooseMap(10)
         pygame.display.update()
 
-def chooseMap():
+def chooseMap(difficulty):
     while True:
-        BG = pygame.image.load("assets/Difficulty.png")
+        BG = pygame.image.load("assets/Choose Map.png")
         SCREEN.blit(BG, (0, 0))
 
         MAP_MOUSE_POS = pygame.mouse.get_pos()
 
         US_BUTTON = Button(image=pygame.image.load("assets/Country Select.png"), pos=(300, 600), 
-                            text_input="US", font=get_font(48), base_color="#d5e5f7", hovering_color="White")
+                            text_input="US", font=get_font(48), base_color="#b2d0f0", hovering_color="White")
         ITALY_BUTTON = Button(image=pygame.image.load("assets/Country Select.png"), pos=(600, 600), 
-                            text_input="ITALY", font=get_font(48), base_color="#d5e5f7", hovering_color="White")
+                            text_input="ITALY", font=get_font(48), base_color="#b2d0f0", hovering_color="White")
         AUSTRALIA_BUTTON = Button(image=pygame.image.load("assets/Country Select.png"), pos=(900, 600), 
-                            text_input="AUSTRALIA", font=get_font(48), base_color="#d5e5f7", hovering_color="White")
+                            text_input="AUSTRALIA", font=get_font(48), base_color="#b2d0f0", hovering_color="White")
 
         for button in [US_BUTTON, ITALY_BUTTON, AUSTRALIA_BUTTON]:
             button.changeColor(MAP_MOUSE_POS)
@@ -80,19 +67,12 @@ def chooseMap():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if US_BUTTON.checkForInput(MAP_MOUSE_POS):
-                    setMap(0)
-                    playGame(DIFFICULTY, MAP_FILE_NUMBER)
+                    playGame(difficulty, 0)
                 elif ITALY_BUTTON.checkForInput(MAP_MOUSE_POS):
-                    setMap(1)
-                    playGame(DIFFICULTY, MAP_FILE_NUMBER)
+                    playGame(difficulty, 1)
                 elif AUSTRALIA_BUTTON.checkForInput(MAP_MOUSE_POS):
-                    setMap(2)
-                    playGame(DIFFICULTY, MAP_FILE_NUMBER)
-
+                    playGame(difficulty, 2)
         pygame.display.update()
-
-def play():
-    chooseDifficulty()
 
 if __name__ == "__main__":
     while True:
@@ -100,10 +80,10 @@ if __name__ == "__main__":
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(600, 600), 
-                            text_input="PLAY", font=get_font(48), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(600, 750), 
-                            text_input="QUIT", font=get_font(48), base_color="#d7fcd4", hovering_color="White")
+        PLAY_BUTTON = Button(image=pygame.image.load("assets/Select Box.png"), pos=(600, 600), 
+                            text_input="PLAY", font=get_font(48), base_color="#c2eae3", hovering_color="White")
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/Select Box.png"), pos=(600, 750), 
+                            text_input="QUIT", font=get_font(48), base_color="#c2eae3", hovering_color="White")
 
         for button in [PLAY_BUTTON, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
@@ -115,9 +95,8 @@ if __name__ == "__main__":
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    play()
+                    chooseDifficulty()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
-
         pygame.display.update()
