@@ -7,18 +7,18 @@
 #Note Middle mouse click reveals the boundary you are trying to draw
 
 from button import Button
-from main_menu import get_font
 from end_screen import end
-import pygame, sys
+import pygame
 import json
+import gm
 
-def playGame(difficulty, map):
-
-    #CHANGE THIS NUMBER TO AFFECT WHOLE FILE
-    MAP_FILE_NUMBER = map
+def playGame():
 
     #CHANGE THIS NUMBER TO AFFECT WHOLE FILE
-    DIFFICULTY = difficulty
+    #MAP_FILE_NUMBER = 0
+
+    #CHANGE THIS NUMBER TO AFFECT WHOLE FILE
+    #DIFFICULTY = difficulty
 
     pygame_coordinates_Array = []
 
@@ -26,12 +26,11 @@ def playGame(difficulty, map):
     pygame.init()
 
     #tuple to set window size
-    win = pygame.display.set_mode((1200,1000))
     BG = pygame.image.load("assets/Gradient Background.png")
-    win.blit(BG, (0, 0))
+    gm.SCREEN.blit(BG, (0, 0))
 
     #String to set window title
-    pygame.display.set_caption("Map Game Prototype")
+    #pygame.display.set_caption("Map Game Prototype")
 
     #Define a variable to control the main loop
     running = True
@@ -82,10 +81,10 @@ def playGame(difficulty, map):
                 #pygame_coordinates_Array.append(pygame_coordinates)
                 # Draw the polygon on the screen
                 # Dont want to show map then comment out section below (This could bw used later possibly to show drawing at a later time)
-                pygame.draw.polygon(win, (0, 0, 255), pygame_coordinates, 3)
+                pygame.draw.polygon(gm.SCREEN, (0, 0, 255), pygame_coordinates, 3)
 
 
-    def pointComparator(difficulty):
+    def pointComparator():
         #get the size of how many correct points
         pygame_coordinates_size =len(pygame_coordinates_Array[0])
         #number of points found correctly
@@ -100,7 +99,7 @@ def playGame(difficulty, map):
                     break
                 else:
                     #call function to check points
-                    correct_points = correct_points + coordinateComparator(x,y, difficulty)
+                    correct_points = correct_points + coordinateComparator(x,y)
 
         #if no points are correct dont divide by zero
         if(correct_points == 0):
@@ -111,7 +110,8 @@ def playGame(difficulty, map):
 
 
     # check every point within 25 points of geojson coordinate
-    def coordinateComparator(geo_coord, drawn_coord, difficulty):
+    def coordinateComparator(geo_coord, drawn_coord):
+        difficulty = gm.difficulties[gm.DIFFICULTY]
         halfValueDifficulty = difficulty/2
 
         for i in geo_coord:
@@ -168,7 +168,7 @@ def playGame(difficulty, map):
         #print(largest_XY)
         width = largest_XY[0] - smallest_XY[0]
         height = largest_XY[1] - smallest_XY[1]
-        pygame.draw.rect(win, (255,0,0), [smallest_XY[0],smallest_XY[1],width, height], 2, 5)
+        pygame.draw.rect(gm.SCREEN, (255,0,0), [smallest_XY[0],smallest_XY[1],width, height], 2, 5)
 
 
     def drawGrid(window, size, rows):
@@ -233,8 +233,8 @@ def playGame(difficulty, map):
             addList = [-1400, 100]
             DrawMapButtonCLick(geojson_data, multiplyList, addList)
 
-    drawGrid(win, 1200, 100)
-    loadJSONFile(MAP_FILE_NUMBER, True)
+    drawGrid(gm.SCREEN, 1200, 100)
+    loadJSONFile(gm.MAP, True)
     drawRectangle()
     pygame.display.update()
 
@@ -243,11 +243,11 @@ def playGame(difficulty, map):
         CLOSE_MOUSE_POS = pygame.mouse.get_pos()
 
         CLOSE_BUTTON = Button(image=pygame.image.load("assets/Select Box.png"), pos=(600, 100), 
-                        text_input="Done", font=get_font(48), base_color="#a8f8d9", hovering_color="White")
+                        text_input="Done", font=gm.get_font(48), base_color="#a8f8d9", hovering_color="White")
 
         for button in [CLOSE_BUTTON]:
             button.changeColor(CLOSE_MOUSE_POS)
-            button.update(win)
+            button.update(gm.SCREEN)
 
         # event handling, gets all event from the event queue
         for event in pygame.event.get():
@@ -256,8 +256,9 @@ def playGame(difficulty, map):
                 if CLOSE_BUTTON.checkForInput(CLOSE_MOUSE_POS):
                     drawnpoints = remove_duplicate_lists(drawnpoints)
                     pygame.display.update()
-                    score = pointComparator(DIFFICULTY)
-                    end(str(score))
+                    gm.SCORE = pointComparator()
+                    gm.SCENE = "end"
+                    return
                     
             if event.type == pygame.QUIT:
                 # change the value too False, to exit the main loop
@@ -269,11 +270,11 @@ def playGame(difficulty, map):
         if(mouse[0]):
             #print("leftclick")
             #xpos of mouse at time of click
-            mousexpos = pygame.mouse.get_pos()[0];
+            mousexpos = pygame.mouse.get_pos()[0]
             #ypos of mouse at time of click
-            mouseypos = pygame.mouse.get_pos()[1];
+            mouseypos = pygame.mouse.get_pos()[1]
             #draw action to create the circle on the graph
-            pygame.draw.circle(win, (0,0,0), (mousexpos,mouseypos),3)
+            pygame.draw.circle(gm.SCREEN, (0,0,0), (mousexpos,mouseypos),3)
             #add point to the dictionary object
             if(findInList(pygame.mouse.get_pos()) == None):
                 drawnpoints.append([mousexpos, mouseypos])
@@ -308,7 +309,7 @@ def playGame(difficulty, map):
 
         #middle mouse click
         if(mouse[1]):
-            loadJSONFile(MAP_FILE_NUMBER, False)
+            loadJSONFile(gm.MAP, False)
             pygame.display.update()
             pass
 
