@@ -126,7 +126,6 @@ def playGame():
     # check every point within 25 points of geojson coordinate
     def coordinateComparator(geo_coord, drawn_coord):
         difficulty = gm.difficulties[gm.DIFFICULTY]
-        print(difficulty)
         halfValueDifficulty = difficulty/2
 
         for i in geo_coord:
