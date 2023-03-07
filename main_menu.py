@@ -29,15 +29,15 @@ def chooseDifficulty():
                 sys.exit(0)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if EASY_BUTTON.checkForInput(DIFF_MOUSE_POS):
-                    gm.difficulty = "easy"
+                    gm.DIFFICULTY = "easy"
                     chooseMap()
                     return
                 elif MEDIUM_BUTTON.checkForInput(DIFF_MOUSE_POS):
-                    gm.difficulty = "medium"
+                    gm.DIFFICULTY = "medium"
                     chooseMap()
                     return
                 elif HARD_BUTTON.checkForInput(DIFF_MOUSE_POS):
-                    gm.difficulty = "hard"
+                    gm.DIFFICULTY = "hard"
                     chooseMap()
                     return
         pygame.display.update()
