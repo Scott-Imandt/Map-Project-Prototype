@@ -14,7 +14,12 @@ def end():
         map_name = "Australia"
 
     # open leaderboard file and write score
-    lbPath = "./leaderboard.txt"
+    lbPath = "./leaderboard_easy.txt"
+    if gm.DIFFICULTY == "medium":
+        lbPath = "./leaderboard_medium.txt"
+    elif gm.DIFFICULTY == "hard":
+        lbPath = "./leaderboard_hard.txt"
+
     if(os.path.exists(lbPath)):
         # if file exists, initialize array of high scores
         lbFile = open(lbPath, "r")
