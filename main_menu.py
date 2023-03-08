@@ -1,4 +1,3 @@
-#Run this file to start game!
 import pygame, sys
 from button import Button
 import gm

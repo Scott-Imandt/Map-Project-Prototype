@@ -1,3 +1,4 @@
+#Run the game from here!
 import pygame
 import gm
 from main_menu import mainMenu

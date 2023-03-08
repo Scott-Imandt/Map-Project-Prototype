@@ -1,5 +1,5 @@
 # Steps to use application
-#   1. launch from main_menu.py and draw the geojson file provided
+#   1. launch from game.py and draw the geojson file provided
 #   2. Change / set difficulty (50 = easy, 20 = medium, = 10 hard) These number are working numbers that set pixel offset accuracy
 #   3. Change Map file number (0 = USA , 1 = Italy, 2 = Australia)
 #   4. Upon quiting the application the score of your accuracy will be printed in the console
@@ -80,11 +80,16 @@ def playGame():
                 count = 0
                 for x in citypoints[0][0]:
                     #Adds points to Global list for text display parsing
-                    pygame_coordinates_City_Array.append([x, citypoints[0][0].get(x)])
+                    pygame_coordinates_City_Array.append([x, pygame_coordinates[count]])
                     #Draws solid circle on screen for city location
                     pygame.draw.circle(gm.SCREEN, (0, 255, 0), pygame_coordinates[count], 6)
                     count = count+1
 
+    def drawCityName(cities):
+        for city in cities:
+            text = gm.get_font(24).render(city[0], True, (0, 255, 0))
+            gm.SCREEN.blit(text, (city[1][0], city[1][1]+10))
+        
     def DrawMapButtonCLick(geojson_data, multiplyList, addList):
         # Loop through each feature in the GeoJSON data and draw it on the screen
         for feature in geojson_data['features']:
@@ -212,6 +217,7 @@ def playGame():
             addList = [2130,1050]
             DrawMap(geojson_data, multiplyList, addList)
             DrawCity(geojson_data, multiplyList, addList)
+            drawCityName(pygame_coordinates_City_Array)
 
         elif(number == 1 and boolean):
             with open('TestFileOFItaly.json') as f:
@@ -220,6 +226,7 @@ def playGame():
             addList = [100, 2150]
             DrawMap(geojson_data, multiplyList, addList)
             DrawCity(geojson_data, multiplyList, addList)
+            drawCityName(pygame_coordinates_City_Array)
 
         elif (number == 2 and boolean):
             with open('TestFileOfAustralia.json') as f:
@@ -228,6 +235,7 @@ def playGame():
             addList = [-1400, 100]
             DrawMap(geojson_data, multiplyList, addList)
             DrawCity(geojson_data, multiplyList, addList)
+            drawCityName(pygame_coordinates_City_Array)
 
         elif (number == 0 and boolean== False):
             with open('testGeoJsonFIle.json') as f:
