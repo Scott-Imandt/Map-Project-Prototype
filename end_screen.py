@@ -5,6 +5,13 @@ import gm
 def end():
     lbPoints = []
     maxEntries = 10
+    map_name = ""
+    if gm.MAP == 0:
+        map_name = "United States"
+    elif gm.MAP == 1:
+        map_name = "Italy"
+    else:
+        map_name = "Australia"
 
     # open leaderboard file and write score
     lbPath = "./leaderboard.txt"
@@ -21,8 +28,10 @@ def end():
     # find location to add score in
     added = False
     for i, item in enumerate(lbPoints):
-        if gm.SCORE > float(item):
-            lbPoints.insert(i, str(gm.SCORE))
+        score = item.split(", ")
+        score = float(score[1])
+        if gm.SCORE > score:
+            lbPoints.insert(i, map_name+", "+str(gm.SCORE))
             if len(lbPoints) > maxEntries:
                 lbPoints.pop(len(lbPoints) - 1)
 
@@ -35,29 +44,26 @@ def end():
 
     if gm.SCORE > 0 and not added and len(lbPoints) < maxEntries:
         lbFile = open(lbPath, "w")
-        lbPoints.append(str(gm.SCORE))
+        lbPoints.append(map_name+", "+str(gm.SCORE))
         lbFile.write('\n'.join(lbPoints))
         lbFile.close()
     # file write end
 
     pygame.init()
-    BG = pygame.image.load("assets/Gradient Background.png")
+    BG = pygame.image.load("assets/Leaderboard.png")
     gm.SCREEN.blit(BG, (0, 0))
 
     text = gm.get_font(48).render('Your score is equal to '+ str(gm.SCORE) +'%', True, (0, 0, 255))
-    gm.SCREEN.blit(text, ((gm.SCREEN_WIDTH - text.get_width()) / 2, 150))
-
-    lbText = gm.get_font(32).render('Leaderboard:', True, (0, 0, 0))
-    gm.SCREEN.blit(lbText, ((gm.SCREEN_WIDTH- lbText.get_width()) / 2, 300))
+    gm.SCREEN.blit(text, ((gm.SCREEN_WIDTH - text.get_width()) / 2, 95))
 
     for i, item in enumerate(lbPoints):
-        text = gm.get_font(16).render(item, True, (0, 0, 0))
-        gm.SCREEN.blit(text, ((gm.SCREEN_WIDTH - text.get_width()) / 2, 400 + 20 * i))
+        text = gm.get_font(24).render(item, True, (0, 0, 0))
+        gm.SCREEN.blit(text, ((gm.SCREEN_WIDTH - text.get_width()) / 2, 375 + 32 * i))
 
     while True:
         CLOSE_MOUSE_POS = pygame.mouse.get_pos()
 
-        CLOSE_BUTTON = Button(image=pygame.image.load("assets/Select Box.png"), pos=(600, 750), 
+        CLOSE_BUTTON = Button(image=pygame.image.load("assets/Select Box.png"), pos=(600, 800), 
                         text_input="QUIT", font=gm.get_font(36), base_color="#a8f8d9", hovering_color="White")
 
         for button in [CLOSE_BUTTON]:
