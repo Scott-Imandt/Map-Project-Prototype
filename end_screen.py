@@ -1,10 +1,20 @@
-import pygame, sys, os
+import pygame, sys, os, json
 from button import Button
 import gm
 
+lbPath = "./leaderboard.json"
+maxEntries = 10
+
+def writeToFile(lbPoints):
+    with open(lbPath, "w") as lbFile:
+        json.dump(lbPoints, lbFile, indent=4)
+    #lbPoints.append(map_name+", "+str(gm.SCORE))
+    #lbFile.write('\n'.join(lbPoints))
+    lbFile.close()
+
 def end():
-    lbPoints = []
-    maxEntries = 10
+    lbPoints = {}
+    
     map_name = ""
     if gm.MAP == 0:
         map_name = "United States"
@@ -14,44 +24,35 @@ def end():
         map_name = "Australia"
 
     # open leaderboard file and write score
-    lbPath = "./leaderboard_easy.txt"
-    if gm.DIFFICULTY == "medium":
-        lbPath = "./leaderboard_medium.txt"
-    elif gm.DIFFICULTY == "hard":
-        lbPath = "./leaderboard_hard.txt"
-
     if(os.path.exists(lbPath)):
         # if file exists, initialize array of high scores
         lbFile = open(lbPath, "r")
-        lbPoints = lbFile.read().splitlines()
+        lbPoints = json.load(lbFile)
         lbFile.close()
     else:
         # create new file
-        lbFile = open(lbPath, "x")
-        lbFile.close()
+        lbPoints["easy"] = []
+        lbPoints["medium"] = []
+        lbPoints["hard"] = []
+        with open(lbPath, "x") as lbFile:
+            json.dump(lbPoints, lbFile, indent=4)
 
     # find location to add score in
     added = False
-    for i, item in enumerate(lbPoints):
-        score = item.split(", ")
-        score = float(score[1])
+    for i, item in enumerate(lbPoints[gm.DIFFICULTY]):
+        score = float(lbPoints[gm.DIFFICULTY][i]["score"])
         if gm.SCORE > score:
-            lbPoints.insert(i, map_name+", "+str(gm.SCORE))
+            lbPoints[gm.DIFFICULTY].insert(i, {"map": map_name, "score": str(gm.SCORE)})
+            # lbPoints.insert(i, map_name+", "+str(gm.SCORE))
             if len(lbPoints) > maxEntries:
-                lbPoints.pop(len(lbPoints) - 1)
-
-            lbFile = open(lbPath, "w")
-            lbFile.write('\n'.join(lbPoints))
-            lbFile.close()
-
+                lbPoints[gm.DIFFICULTY].pop(len(lbPoints[gm.DIFFICULTY]) - 1)
+            writeToFile(lbPoints)
             added = True
             break
 
-    if gm.SCORE > 0 and not added and len(lbPoints) < maxEntries:
-        lbFile = open(lbPath, "w")
-        lbPoints.append(map_name+", "+str(gm.SCORE))
-        lbFile.write('\n'.join(lbPoints))
-        lbFile.close()
+    if gm.SCORE > 0 and not added and len(lbPoints[gm.DIFFICULTY]) < maxEntries:
+        lbPoints[gm.DIFFICULTY].append({"map": map_name, "score": str(gm.SCORE)})
+        writeToFile(lbPoints)
     # file write end
 
     pygame.init()
@@ -61,8 +62,8 @@ def end():
     text = gm.get_font(48).render('Your score is equal to '+ str(gm.SCORE) +'%', True, (0, 0, 255))
     gm.SCREEN.blit(text, ((gm.SCREEN_WIDTH - text.get_width()) / 2, 95))
 
-    for i, item in enumerate(lbPoints):
-        text = gm.get_font(24).render(item, True, (0, 0, 0))
+    for i, item in enumerate(lbPoints[gm.DIFFICULTY]):
+        text = gm.get_font(24).render(item["map"] + ", " + item["score"], True, (0, 0, 0))
         gm.SCREEN.blit(text, ((gm.SCREEN_WIDTH - text.get_width()) / 2, 375 + 32 * i))
 
     while True:
